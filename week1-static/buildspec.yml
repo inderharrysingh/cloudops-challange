@@ -25,6 +25,6 @@ phases:
 
 artifacts:
   files:
-    - "${homeDir}/dist/*"
+    - "${homeDir}/dist/**/*"
   discard-paths: yes
  
