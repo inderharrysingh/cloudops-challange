@@ -12,6 +12,7 @@ phases:
 
     commands:
       - echo Entered the install phase...
+      - cd $homeDir
       - npm install
  
   build:
