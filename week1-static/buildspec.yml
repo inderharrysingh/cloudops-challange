@@ -1,0 +1,28 @@
+version: 0.2
+
+env:
+  variables:
+    homeDir : "./week1-static/react-project"
+
+
+phases:
+  install:
+    runtime-versions:
+      nodejs: 18.x
+
+    commands:
+      - echo Entered the install phase...
+      - cd "$homeDir"
+      - npm install
+ 
+  build:
+    commands:
+      - echo Entered the build phase...
+      - echo Build started on `date`
+      - npm run build 
+
+artifacts:
+  files:
+    - "${homeDir}/dist/*/**"
+  discard-paths: yes
+ 
