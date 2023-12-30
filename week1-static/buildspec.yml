@@ -2,7 +2,7 @@ version: 0.2
 
 env:
   variables:
-    homeDir : "./week1-static/react-project"
+    homeDir : "week1-static/react-project"
 
 
 phases:
@@ -12,7 +12,9 @@ phases:
 
     commands:
       - echo Entered the install phase...
-      - cd "$homeDir"
+      - ls
+      - pwd
+      - cd $homeDir
       - npm install
  
   build:
