@@ -1,13 +1,13 @@
 variable "aws-region" {
   type = string
-  default = "us-west-1"
+  default = "us-east-1"
 }
 
 
 
 variable "bucket_name" {
     type = string
-    default = "cloudops-challange-static-site-hosting"
+    default = "cloudops-challange-static-site-hosting-x"
 }
 
 
