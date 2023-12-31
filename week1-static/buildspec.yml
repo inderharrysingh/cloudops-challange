@@ -23,7 +23,7 @@ phases:
 
 artifacts:
   files:
-    - "${homeDir}/dist/**/*"
-  name: randomArtifact
+    - "**/*"
+  base-directory: 'dist'
 
  
