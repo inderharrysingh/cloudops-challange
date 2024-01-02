@@ -16,6 +16,9 @@ function App() {
         </a>
       </div>
       <h1>CloudOps Challange <span style={ {color: '#f531f5'}}>Week 1</span></h1>
+      <a href="https://github.com/inderharrysingh/cloudops-challange.git" target="_blank">
+         <h2>Github</h2>
+        </a>
       <div className="card">
       </div>
     </>
