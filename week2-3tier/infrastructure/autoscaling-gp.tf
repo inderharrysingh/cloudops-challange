@@ -9,25 +9,19 @@ resource "aws_launch_template" "my_launch_template" {
     }
   }
 
+  iam_instance_profile {
+    arn = aws_iam_instance_profile.iam_instance_profile.arn
+  }
+
   key_name = var.key-name
 
   image_id = data.aws_ami.latest_amazon_linux.id
 
   instance_type =  var.instance_type
 
-   vpc_security_group_ids =  [aws_security_group.ec2_sg.id ]
+   vpc_security_group_ids =  [aws_security_group.ec2_sg.id ] 
 
- 
-
-
-  user_data = base64encode(<<EOF
-                      #!/bin/bash
-                      yum update -y
-                      yum install -y httpd
-                      systemctl start httpd
-                      systemctl enable httpd
-                      EOF
-                    )
+  user_data = base64encode(file("${path.module}/userdata.sh"))
 }
 
 
@@ -48,4 +42,12 @@ resource "aws_autoscaling_group" "my_asg" {
   health_check_grace_period  = 300
   force_delete               = true
   wait_for_capacity_timeout = "0"
+}
+
+
+
+resource "aws_iam_instance_profile" "iam_instance_profile" {
+  name = "my-instance-profile"
+
+  role = aws_iam_role.example_role.name
 }

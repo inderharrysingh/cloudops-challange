@@ -7,9 +7,12 @@ terraform {
   }
 }
 
+
 provider "aws" {
   region = var.region
 }
 
 
-
+module "infrastructure" {
+  source = "./modules" 
+}

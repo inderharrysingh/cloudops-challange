@@ -6,6 +6,14 @@ resource "aws_vpc" "my_vpc" {
 }
 
 
+# nat gateway for each subnet 
+resource "aws_nat_gateway" "myNatGateway" {
+  subnet_id = each.value.id
+
+  for_each = aws_subnet.public_subnets 
+  
+}
+
 
 
 resource "aws_subnet" "public_subnets" {
@@ -28,6 +36,26 @@ resource "aws_subnet" "private_subnets" {
 
   count = var.number-of-private-subnets
 }
+
+
+resource "aws_route_table" "nat_private_route_table"{
+  vpc_id = aws_vpc.my_vpc.id
+}
+
+resource "aws_route" "nat_route_private" {
+  route_table_id = aws_route_table.nat_private_route_table.id 
+  destination_cidr_block = "0.0.0.0/0"
+  gateway_id = aws_nat_gateway.myNatGateway.id 
+}
+
+
+resource "aws_route_table_association" "nat_private_association" {
+  subnet_id = each.value.id 
+  route_table_id = aws_route.nat_route_private.id 
+  for_each = aws_subnet.private_subnets
+}
+
+
 
 
 
@@ -56,7 +84,7 @@ resource "aws_route_table_association" "public-subnet-assocation" {
   subnet_id      = aws_subnet.public_subnets[count.index].id
   route_table_id = aws_route_table.public_route_table.id
 
-  count = 2
+  count = var.number-of-public-subnets
 }
 
 
@@ -81,6 +109,16 @@ resource "aws_security_group" "alb_sg" {
     cidr_blocks = ["0.0.0.0/0"]
   }
 
+  egress {
+    from_port   = 0
+    to_port     = 0
+    protocol    = "-1"
+    cidr_blocks = ["0.0.0.0/0"]
+  }
+
+
+
+
 }
 
 resource "aws_security_group" "ec2_sg" {
@@ -103,4 +141,14 @@ resource "aws_security_group" "ec2_sg" {
     protocol    = "tcp"
     cidr_blocks = ["0.0.0.0/0"]
   }
+
+    egress {
+    from_port = 0
+    to_port = 0
+    protocol = "-1"
+    cidr_blocks = ["0.0.0.0/0"]
+  }
+
+
+
 }

@@ -41,7 +41,7 @@ data "aws_ami" "latest_amazon_linux" {
   owners      = ["amazon"]
   filter {
     name = "name"
-    values = ["amzn2-ami-hvm-*-x86_64-gp2"]
+    values = ["al2023-ami-2023.3.20231218.0-kernel-6.1-x86_64"]
   }
 }
 
@@ -55,13 +55,16 @@ variable "target-group-name" {
 
 variable "number-of-public-subnets" {
   type = number
-  default = 3
+  default = 2
 }
+
+
+
 
 
 variable "number-of-private-subnets" {
   type = number
-  default = 3
+  default = 2
 }
 
 

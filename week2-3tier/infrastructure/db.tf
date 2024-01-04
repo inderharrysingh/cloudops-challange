@@ -1,5 +1,3 @@
-
-
 resource "aws_db_instance" "my-db" {
   allocated_storage    = 10
   db_name              = var.db_name
@@ -15,12 +13,12 @@ resource "aws_db_instance" "my-db" {
   db_subnet_group_name = aws_db_subnet_group.subnet_group.name
 }
 
-
 resource "aws_db_subnet_group" "subnet_group" {
-  name       = "main"
+  name       = "main-rds"
   subnet_ids = aws_subnet.private_subnets[*].id 
 
   tags = {
     Name = "My DB subnet group"
   }
 }
+

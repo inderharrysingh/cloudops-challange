@@ -13,7 +13,7 @@ variable "codebuild-project-name" {
 
 variable "github-repo" {
   type = string
-  default = "inderharrysingh/cloudops-challange"
+  default = "inderjotx/cloudops-challange"
 }
 
 

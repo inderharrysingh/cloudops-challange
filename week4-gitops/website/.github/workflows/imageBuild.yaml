@@ -1,0 +1,75 @@
+name: "Docker build and push"
+
+
+on:
+    push:
+      branches:
+        - "main"
+        - "ui"
+# add arguments to the build image 
+
+  
+jobs:
+  build:
+    runs-on: ubuntu-22.04
+  
+    steps:
+      -
+        name: Checkout
+        uses: actions/checkout@v4
+    
+          
+      -
+        name: Login to Docker Hub
+        uses: docker/login-action@v3
+        with:
+          username: ${{ secrets.DOCKERHUB_USERNAME }}
+          password: ${{ secrets.DOCKERHUB_TOKEN }}
+
+
+      -
+        name: Set up Docker Buildx
+        uses: docker/setup-buildx-action@v3
+
+
+
+      -
+        name: Build and push
+        uses: docker/build-push-action@v5
+        with:
+          context: .
+          file: ./Dockerfile
+          push: true
+          build-args: SANITY_ID=${{ secrets.SANITY_ID }}
+          tags: ${{ secrets.DOCKERHUB_USERNAME }}/personal-website:${{ github.sha }}
+
+
+
+
+    
+  updateRepo:
+    runs-on: ubuntu-22.04
+    needs: build
+
+
+    steps:
+
+        -
+          name: Checkout
+          uses: actions/checkout@v4
+          with:
+            repository: inderjotx/portfolio-image
+            ref: 'main'
+            token:  ${{ secrets.ACTIONS_GITHUB_TOKEN }}
+
+        - 
+          name: updating image
+          run: |
+            git config user.name "GitHub Actions Bot"
+            git config user.email "inderjotsingh141x@gmail.com"
+            echo "updating image"
+            sed -i "s/image: inderharry\/personal-website:*/image: inderharry\/personal-website:${{ github.sha }}/g" deployment.yaml
+            cat deployment.yaml
+            git push origin main
+    
+            
