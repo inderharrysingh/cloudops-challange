@@ -10,6 +10,6 @@ def get_post_url(bucket, partition):
 
 
 bucket = "kinesis-project-01"
-partition = "lodu"
+partition = "userdata"
 
 print(get_post_url(bucket=bucket, partition=partition))
