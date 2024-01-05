@@ -1,45 +1,69 @@
 
-import { getPutURL  } from "./buildURL"
-import { callLambda } from "./callLambda";
+import { getUrl  } from "./buildURL"
+
+
+export async function uploadFileToS3( files: File[]): Promise<void> {
 
 
 
-export async function uploadFileToS3( bucketName : string , userName : string  , files: File[]): Promise<void> {
-    try {
-      const requestOptions: RequestInit = {
-        method: 'PUT',
-        body: files[0], // Assuming you are uploading a single file, adjust accordingly if multiple files
-        headers: {
-          'Content-Type': files[0].type,
-          // Add any other headers if needed
-        },
-      };
+const BUCKET = "kinesis-project-01";
 
-      console.log(files[0])
 
-      const dataFromLambda = callLambda(bucketName, `${userName}/${files[0].type}`)
-      // Include properties from feeds in the query string of the signed URL
+      const promised_urls = files.map( ( file )  => getUrl( BUCKET , file.name) )
+      const urls =  await  Promise.all(promised_urls)
 
-      const uploadURL = getPutURL(dataFromLambda)
-      console.log("url")
-      console.log(uploadURL)
 
-      const url = "https://kinesis-project-01.s3.amazonaws.com/?key=userdata&AWSAccessKeyId=AKIAYBJ5WQ6V6NFF7POS&policy=eyJleHBpcmF0aW9uIjogIjIwMjQtMDEtMDVUMTc6MjI6MDdaIiwgImNvbmRpdGlvbnMiOiBbeyJidWNrZXQiOiAia2luZXNpcy1wcm9qZWN0LTAxIn0sIHsia2V5IjogInVzZXJkYXRhIn1dfQ%3D%3D&signature=KuMfRopzt5DUDgcZZp97Shkoi1E%3D"
-      const response = await fetch(url, requestOptions);
+      urls.forEach( async ( url : string  ) => {
+                try 
+                {
+                      console.log(url)
+                      const response = await put(url, files )
+                      console.log(response)
+
+                if (!response.ok) {
+                  
+                  throw new Error(`Failed to upload file. Status: ${response.status}`);
+                }
+            
+                  console.log('File successfully uploaded to S3!');
+              } catch (error) {
+                console.error('Error uploading file to S3:', error);
+          
+              }
+
+      })
+
       
-      console.log(response)
-      if (!response.ok) {
-        
-        throw new Error(`Failed to upload file. Status: ${response.status}`);
-      }
-  
-      console.log('File successfully uploaded to S3!');
-    } catch (error) {
-      console.error('Error uploading file to S3:', error);
-    }
+
+            
+         
+
+
   }
   
+
+  // if don't work try as a blog 
   
+function put(url : string , file : File[]) : Promise<any> {
+  return new Promise((resolve, reject) => {
+    
+    fetch(url, {
+      method: 'PUT',
+      headers: {
+        'Content-Type':  file[0].type
+      },
+      body: file[0],
+    })
+      .then((res) => res.text())
+      .then((responseBody) => {
+        resolve(responseBody);
+      })
+      .catch((err) => {
+        reject(err);
+      });
+  });
+}
+
 
   
 

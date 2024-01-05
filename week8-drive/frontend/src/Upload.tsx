@@ -2,11 +2,8 @@ import React, { useCallback, useState } from 'react';
 import { useDropzone, FileRejection } from 'react-dropzone';
 
 
-const BUCKET_NAME="kinesis-project-01"
-const USER_NAME="random"
-
 interface MyDropzoneProps {
-  onUpload:  (bucketName : string , userName : string  , files: File[]) => Promise<void>
+  onUpload:  ( files: File[]) => Promise<void>
 
 }
 
@@ -27,10 +24,7 @@ const MyDropzoneComponent: React.FC<MyDropzoneProps> = ({ onUpload }) => {
   const { getRootProps, getInputProps, isDragActive } = useDropzone({ onDrop, multiple: true });
 
   const handleUpload = async  () => {
-    // Perform the file upload logic here using the provided onUpload callback
-     await  onUpload( BUCKET_NAME, USER_NAME , uploadedFiles);
-
-    
+     await  onUpload(uploadedFiles);
     
   };
 
