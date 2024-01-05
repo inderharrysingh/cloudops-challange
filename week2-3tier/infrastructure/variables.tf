@@ -5,15 +5,6 @@ variable "region" {
 }
 
 
-variable "vpc-cidr_block" {
-  type = string
-  default = "10.0.0.0/16"
-}
-
-
-data "aws_availability_zones" "available" {
-  state = "available"
-}
 
 
 
@@ -28,25 +19,16 @@ variable "launch_template_name" {
   default = "my-template"
 }
 
-variable "key-name" {
+variable "key_name" {
     type = string
     default = "admin"
   
 }
 
 
-data "aws_ami" "latest_amazon_linux" {
-  most_recent = true
-
-  owners      = ["amazon"]
-  filter {
-    name = "name"
-    values = ["al2023-ami-2023.3.20231218.0-kernel-6.1-x86_64"]
-  }
-}
 
 
-variable "target-group-name" {
+variable "target_group_name" {
     type = string
     default = "my-tg"
   
@@ -74,6 +56,7 @@ variable "db_name" {
 }
 
 
+
 variable "db_engine" {
   type = string
   default = "mysql"
@@ -86,10 +69,12 @@ variable "engine_version" {
 }
 
 
-variable "instance_class" {
+variable "db_instance_class" {
   type = string
   default = "db.t3.micro"
 }
+
+
 
 
 variable "db_user" {
@@ -99,6 +84,13 @@ variable "db_user" {
     "username" = "root"
     "password" = "password"
   }
+}
+
+
+
+variable "alb_name" {
+  
+  default = "my-alb"
 }
 
 
