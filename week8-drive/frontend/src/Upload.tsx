@@ -1,30 +1,37 @@
 import React, { useCallback, useState } from 'react';
 import { useDropzone, FileRejection } from 'react-dropzone';
 
+
+const BUCKET_NAME="kinesis-project-01"
+const USER_NAME="random"
+
 interface MyDropzoneProps {
-  onUpload: (files: File[]) => void;
+  onUpload:  (bucketName : string , userName : string  , files: File[]) => Promise<void>
+
 }
 
 const MyDropzoneComponent: React.FC<MyDropzoneProps> = ({ onUpload }) => {
   const [uploadedFiles, setUploadedFiles] = useState<File[]>([]);
 
   const onDrop = useCallback((acceptedFiles: File[], fileRejections: FileRejection[]) => {
-    // Handle rejected files if needed
+
     fileRejections.forEach((rejectedFile) => {
       console.error('Rejected File:', rejectedFile.file);
       console.error('Rejection Error:', rejectedFile.errors);
     });
 
-    // Update state with accepted files
+
     setUploadedFiles((prevFiles) => [...prevFiles, ...acceptedFiles]);
   }, []);
 
   const { getRootProps, getInputProps, isDragActive } = useDropzone({ onDrop, multiple: true });
 
-  const handleUpload = () => {
+  const handleUpload = async  () => {
     // Perform the file upload logic here using the provided onUpload callback
-    onUpload(uploadedFiles);
-    // Optionally, clear uploadedFiles state or perform any other post-upload actions
+     await  onUpload( BUCKET_NAME, USER_NAME , uploadedFiles);
+
+    
+    
   };
 
   return (

@@ -12,6 +12,7 @@ export interface LambdaResponse {
 
 export function getPutURL( labdaResponse : LambdaResponse ){
     const completeS3Url = `${labdaResponse.url}?${new URLSearchParams(labdaResponse.fields).toString()}`;
+    console.log(completeS3Url)
     return completeS3Url;
 
 }

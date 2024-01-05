@@ -15,13 +15,21 @@ export async function uploadFileToS3( bucketName : string , userName : string  ,
         },
       };
 
+      console.log(files[0])
+
       const dataFromLambda = callLambda(bucketName, `${userName}/${files[0].type}`)
       // Include properties from feeds in the query string of the signed URL
+
       const uploadURL = getPutURL(dataFromLambda)
-  
-      const response = await fetch(uploadURL, requestOptions);
-  
+      console.log("url")
+      console.log(uploadURL)
+
+      const url = "https://kinesis-project-01.s3.amazonaws.com/?key=userdata&AWSAccessKeyId=AKIAYBJ5WQ6V6NFF7POS&policy=eyJleHBpcmF0aW9uIjogIjIwMjQtMDEtMDVUMTc6MjI6MDdaIiwgImNvbmRpdGlvbnMiOiBbeyJidWNrZXQiOiAia2luZXNpcy1wcm9qZWN0LTAxIn0sIHsia2V5IjogInVzZXJkYXRhIn1dfQ%3D%3D&signature=KuMfRopzt5DUDgcZZp97Shkoi1E%3D"
+      const response = await fetch(url, requestOptions);
+      
+      console.log(response)
       if (!response.ok) {
+        
         throw new Error(`Failed to upload file. Status: ${response.status}`);
       }
   
