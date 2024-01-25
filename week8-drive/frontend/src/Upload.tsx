@@ -3,7 +3,7 @@ import { useDropzone, FileRejection } from 'react-dropzone';
 
 
 interface MyDropzoneProps {
-  onUpload:  ( files: File[]) => Promise<void>
+  onUpload:  ( files: File[]) => Promise<number>
 
 }
 
@@ -24,8 +24,14 @@ const MyDropzoneComponent: React.FC<MyDropzoneProps> = ({ onUpload }) => {
   const { getRootProps, getInputProps, isDragActive } = useDropzone({ onDrop, multiple: true });
 
   const handleUpload = async  () => {
-     await  onUpload(uploadedFiles);
+    const response  =  await  onUpload(uploadedFiles);
     
+    if ( response == 0 ) {
+        setUploadedFiles([])
+    }
+    else{
+       console.log("error")
+    }
   };
 
   return (
