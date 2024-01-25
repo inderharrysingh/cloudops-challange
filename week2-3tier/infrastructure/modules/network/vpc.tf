@@ -1,7 +1,7 @@
 # Create VPC
 resource "aws_vpc" "my_vpc" {
-  cidr_block =  "10.0.0.0/16"
-  enable_dns_support = true
+  cidr_block           = "10.0.0.0/16"
+  enable_dns_support   = true
   enable_dns_hostnames = true
 }
 
@@ -11,8 +11,8 @@ resource "aws_vpc" "my_vpc" {
 # public subnets
 resource "aws_subnet" "public_subnets" {
   vpc_id                  = aws_vpc.my_vpc.id
-  cidr_block              = "10.0.${ count.index  + 1}.0/24"                       
-  availability_zone       = data.aws_availability_zones.available.names[ (count.index) %  length(data.aws_availability_zones.available.names)]
+  cidr_block              = "10.0.${count.index + 1}.0/24"
+  availability_zone       = data.aws_availability_zones.available.names[(count.index) % length(data.aws_availability_zones.available.names)]
   map_public_ip_on_launch = true
 
   count = var.number_of_public_subnets
@@ -20,16 +20,16 @@ resource "aws_subnet" "public_subnets" {
 
 
 
-# Create private subnets
+# Create private subnet
 resource "aws_subnet" "private_subnets" {
-  vpc_id     = aws_vpc.my_vpc.id
-  cidr_block = "10.0.${ count.index + var.number_of_public_subnets + 1 }.0/24"
-  availability_zone       = data.aws_availability_zones.available.names[ (count.index + 2 ) %  length(data.aws_availability_zones.available.names)]
+  vpc_id            = aws_vpc.my_vpc.id
+  cidr_block        = "10.0.${count.index + var.number_of_public_subnets + 1}.0/24"
+  availability_zone = data.aws_availability_zones.available.names[(count.index + 2) % length(data.aws_availability_zones.available.names)]
 
   count = var.number_of_private_subnets
 
   tags = {
-    "az" = data.aws_availability_zones.available.names[ (count.index + 2 ) %  length(data.aws_availability_zones.available.names)]
+    "az" = data.aws_availability_zones.available.names[(count.index + 2) % length(data.aws_availability_zones.available.names)]
   }
 }
 
@@ -80,7 +80,7 @@ resource "aws_lb_target_group" "my_target_group" {
   port        = 80
   protocol    = "HTTP"
   target_type = "instance"
-  vpc_id = aws_vpc.my_vpc.id
+  vpc_id      = aws_vpc.my_vpc.id
 
   health_check {
     path = "/"

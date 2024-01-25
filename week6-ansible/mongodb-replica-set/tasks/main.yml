@@ -1,0 +1,115 @@
+---
+# tasks file for mongodb-replica-set
+
+
+- name: Installing prerequisites
+  apt:
+    name: "{{ item }}"
+    state: present
+    update_cache: true
+  with_items: 
+      - gnupg
+      - curl
+      - apt-transport-https
+      - ca-certificates 
+      - software-properties-common 
+      - python3-pip
+  
+
+
+- name: Installing required mongopackage
+  ansible.builtin.pip:
+    name: pymongo
+
+- name: Change Hostname
+  ansible.builtin.hostname:
+    name: "{{ hostvars[inventory_hostname].mongo_name }}"
+
+
+
+- name: Add Ansible inventory mappings to /etc/hosts
+  blockinfile:
+    path: /etc/hosts
+    block: |
+      {% for host in groups['all'] %}
+      {{ hostvars[host].private_ip }} {{ hostvars[host].mongo_name }}
+      {% endfor %}
+
+
+
+
+
+- name: Installign mongodb
+  ansible.builtin.get_url:
+    url:  https://pgp.mongodb.com/server-7.0.asc
+    dest: /usr/share/keyrings/mongodb-server-7.0.asc
+    mode: 0644
+    force: true
+
+    
+- name: Adding repo
+  ansible.builtin.apt_repository:
+    repo:  deb [signed-by=/usr/share/keyrings/mongodb-server-7.0.asc ] https://repo.mongodb.org/apt/ubuntu jammy/mongodb-org/7.0 multiverse
+    filename: /etc/apt/sources.list.d/mongodb-org-7.0.list
+
+
+- name: Installing Mongo
+  apt:
+    name: mongodb-org
+    state: present
+
+
+
+- name: enable
+  ansible.builtin.systemd:
+    name: mongod
+    state: started
+    enabled: true
+
+
+
+- name: Create mongodb Admin 
+  community.mongodb.mongodb_user:
+    database: admin
+    name: root 
+    password: root-password
+    roles: 
+      - root
+    state: absent
+  
+  when: "'master' in hostvars[inventory_hostname].mongo_name"  
+
+
+
+- name: Copy Mongo Configuration
+  ansible.builtin.template:
+    src: "{{ role_path }}/templates/mongod.conf.j2"
+    dest: /etc/mongod.conf
+    owner: mongodb
+    group: mongodb
+
+
+
+- name: Restart Mongo
+  ansible.builtin.systemd:
+    name: mongod
+    state: restarted
+    
+
+
+- name: Create Replicaset 
+  community.mongodb.mongodb_replicaset:
+    login_host: "localhost"
+    login_user: root 
+    login_password: root-password
+    login_database: admin
+    replica_set: "rs01"
+    ssl_cert_reqs: "CERT_NONE"
+    debug: true 
+    members:
+    - worker
+    - master
+    validate: false
+  when: "'master' in hostvars[inventory_hostname].mongo_name"  
+  
+

@@ -1,0 +1,10 @@
+---
+
+# tasks file for nginx-server
+
+
+- name: Install Nginx 
+  ansible.builtin.apt:
+    name: nginx
+  handlers: Enable and Start Nginx
+ 

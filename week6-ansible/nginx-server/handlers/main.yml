@@ -1,0 +1,8 @@
+---
+# handlers file for nginx-server
+
+- name: Enable and Start Nginx
+  ansible.builtin.service:
+    name: nginx
+    enabled: true
+    state: started

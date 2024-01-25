@@ -1,0 +1,34 @@
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+# BEGIN ANSIBLE MANAGED BLOCK
+all:
+  hosts:
+    host1:
+      ansible_host: 52.91.138.57
+      mongo_name: master
+      private_ip: 172.31.21.106
+    host2:
+      ansible_host: 54.160.149.42
+      mongo_name: worker
+      private_ip: 172.31.20.104
+# END ANSIBLE MANAGED BLOCK
