@@ -1,26 +1,26 @@
 import { DynamoDBClient, GetItemCommand } from "@aws-sdk/client-dynamodb";
 import { DynamoDBDocumentClient, PutCommand } from "@aws-sdk/lib-dynamodb";
 import { marshall } from '@aws-sdk/util-dynamodb';
-import { hash, compare } from 'bcrypt'
+import { hash } from 'bcrypt'
 
 
 const client = new DynamoDBClient({});
 const docClient = DynamoDBDocumentClient.from(client);
 const SALT_ROUNDS = 5
 
-async function registerUser(username, name, password) {
+async function registerUser(email, name, password) {
 
     try {
 
-        // username has to be unique
-        const response = await isUnique(username)
+        // email has to be unique
+        const response = await isUnique(email)
 
 
 
         // if unique
         if (!response || !response.Item) {
 
-            const response = await addToTable(username, name, password)
+            const response = await addToTable(email, name, password)
 
             if (response['$metadata'].httpStatusCode == 200) {
                 return {
@@ -68,13 +68,13 @@ async function registerUser(username, name, password) {
 }
 
 
-async function isUnique(username) {
+async function isUnique(email) {
 
     // check the dynamodb table 
-    console.log(username)
+    console.log(email)
     const command = new GetItemCommand({
-        TableName: "drive-table",
-        Key: marshall({ ['username']: username })
+        TableName: "my-drive-table",
+        Key: marshall({ ['email']: email })
 
 
 
@@ -90,14 +90,14 @@ async function isUnique(username) {
 
 
 
-async function addToTable(username, name, password) {
+async function addToTable(email, name, password) {
 
     const hashedPassword = await hash(password, SALT_ROUNDS)
 
     const command = new PutCommand({
-        TableName: "drive-table",
+        TableName: "my-drive-table",
         Item: {
-            username: username,
+            email: email,
             password: hashedPassword,
             name: name
         }

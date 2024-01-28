@@ -1,6 +1,7 @@
 import jwt from "jsonwebtoken"
 const { verify } = jwt
 
+const SECRET = "i-am-inderjot-singh"
 
 
 
@@ -46,5 +47,3 @@ function vertifyToken(token) {
     }
 
 }
-
-

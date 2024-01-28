@@ -4,19 +4,18 @@ import { DynamoDBDocumentClient } from "@aws-sdk/lib-dynamodb";
 import { marshall } from '@aws-sdk/util-dynamodb';
 import { compare } from 'bcrypt'
 import jwt from "jsonwebtoken";
-const { verify, sign } = jwt
+const { sign } = jwt
 
 
 const client = new DynamoDBClient({});
 const docClient = DynamoDBDocumentClient.from(client);
-const SALT_ROUNDS = 5
 const SECRET = "i-am-inderjot-singh"
 
-async function login(username, password) {
+async function login(email, password) {
 
     try {
 
-        const user = await findUser(username)
+        const user = await findUser(email)
 
         console.log(typeof user.Item)
         console.log(user.Item)
@@ -84,13 +83,13 @@ function createToken(user) {
 
 
 
-async function findUser(username) {
+async function findUser(email) {
 
     // check the dynamodb table 
-    console.log(username)
+    console.log(email)
     const command = new GetItemCommand({
-        TableName: "drive-table",
-        Key: marshall({ ['username']: username })
+        TableName: "my-drive-table",
+        Key: marshall({ ['email']: email })
 
 
 
@@ -103,4 +102,3 @@ async function findUser(username) {
 
 }
 
-// console.log(await login("neplai", "asldfj"))
