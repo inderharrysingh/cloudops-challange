@@ -1,47 +1,30 @@
-import { useState } from "react";
-import { CommandSeparator } from "./ui/command";
 import { cn } from "@/lib/utils";
-import { chown } from "fs";
-
+import { Triangle } from "lucide-react";
+import { useState } from "react";
 
 interface FilesystemType {
-    [key: string]: FilesystemType | null;
+    [key: string]: FilesystemType;
 }
 
-
-
-
 export function Testing({ filesystem }: { filesystem: FilesystemType }) {
+    const [visible, setVisible] = useState<boolean>(false)
 
-
-    // const [visiblity, setVisibility] = useState<boolean>(false)
-
-
-
-    if (!filesystem) {
-        return <></>
+    if (!filesystem || Object.keys(filesystem).length === 0) {
+        return null;
     }
 
-    const keys = Object.keys(filesystem)
-    console.log(keys)
-
     return (
-        <div>
+        <div className="h-full w-full bg-purple-400 border border-black ">
+            {Object.entries(filesystem).map(([key, value]) => (
+                <div key={key}>
+                    <div className="cursor-pointer" onClick={() => setVisible((prev: boolean) => !prev)} >{key}</div>
+                    <div className={cn("ml-4", visible ? "block" : "hidden")} >
+                        <Testing filesystem={value} />
+                    </div>
+                </div>
+            ))}
 
-            {
-
-                keys.map((key: string) => {
-
-                    return (
-                        <div key={key}>
-                            <div >{key}</div>
-                            <CommandSeparator />
-                            {/* <div className={cn("pl-4")} > <Testing filesystem={filesystem[key] || {}} /></div> */}
-                        </div>
-                    )
-
-                })
-            }
+            {/* <div className="ml-auto"> <Triangle className="h-2 w-2" /> </div>LL */}
         </div>
-    )
+    );
 }

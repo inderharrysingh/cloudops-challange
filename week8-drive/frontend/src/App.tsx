@@ -1,8 +1,6 @@
 // import { Route, Routes, BrowserRouter } from 'react-router-dom'
 import './App.css'
-import { Filesystem } from './components/sections/Filesystem'
-import { Testing } from './components/testing';
-import { getFileSystem } from './lib/createFileSystem';
+import { FileViewer } from './components/FileViewer'
 // import UploadMe from "./Upload"
 // import { uploadFileToS3 } from './lib/onUpload'
 // import { LoginSection } from './components/sections/LoginSection'
@@ -11,16 +9,9 @@ import { getFileSystem } from './lib/createFileSystem';
 
 
 
-const paths: string[] = [
-  '/root/file1/file2/file3/page1.tsx',
-  '/root/file1/page2.tsx',
-  '/root/file1/file2/page3.tsx'
-];
-
 
 function App() {
 
-  const data = getFileSystem(paths)
 
   return (
     <>
@@ -43,8 +34,7 @@ function App() {
         {/* <RegisterSection /> */}
         {/* <Toaster /> */}
         {/* <Filesystem /> */}
-
-        <Testing filesystem={data} />
+        <FileViewer />
       </div>
     </>
   )
